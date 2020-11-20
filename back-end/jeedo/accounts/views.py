@@ -3,7 +3,7 @@ from django.shortcuts import reverse,redirect
 from team.serializers import AspirantProfileSerializer,ExpertProfileSerializer
 #from django.views.generic import CreateView
 #from .forms import AspirantRegistrationForm,ExpertRegistraionForm
-from accounts.models import AspirantProfile, ExpertProfile
+from accounts.models import StudentProfile, ExpertProfile
 from django.middleware import csrf
 from django.conf import settings
 from django.views.decorators.cache import never_cache
@@ -29,7 +29,7 @@ class AuthenticationCheckAPIView(APIView):
         if authenticated:
             data['user']=UserSerializer(request.user).data
             expert = ExpertProfile.objects.filter(user = request.user)
-            aspirant = AspirantProfile.objects.filter(user=request.user)
+            aspirant = StudentProfile.objects.filter(user=request.user)
             if aspirant.exists():
                 data['aspirantprofile'] = AspirantProfileSerializer(aspirant.first()).data
             elif expert.exists():
@@ -100,9 +100,9 @@ class AspirantProfileAPIView(APIView):
         user.first_name = data.pop('first_name')
         user.last_name = data.pop('last_name')
         user.save()
-        profile = AspirantProfile.objects.create(user=user,**data)
+        profile = StudentProfile.objects.create(user=user,**data)
         profile.save()
-        AspirantProfile.student_register_email.delay(user.first_name,user.email)
+        StudentProfile.student_register_email.delay(user.first_name,user.email)
         return Response(AspirantProfileSerializer(profile).data,status=status.HTTP_200_OK)
 
 class ExpertProfileAPIView(APIView):
@@ -125,6 +125,9 @@ class ExpertProfileAPIView(APIView):
         profile.save()
         ExpertProfile.expert_register_email(user.first_name,user.email)
         return Response(ExpertProfileSerializer(profile).data,status=status.HTTP_200_OK)
+
+    
+
 
 
 

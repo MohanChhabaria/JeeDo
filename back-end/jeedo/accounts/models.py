@@ -11,11 +11,12 @@ from django.utils.html import strip_tags
 # Create your models here.
 
 
-class AspirantProfile(models.Model):
+class StudentProfile(models.Model):
+    Name =models.CharField(max_length=50,default=None)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,default =None)
     
-    user = models.OneToOneField(User,on_delete=models.CASCADE),
-    dob = models.DateField(),
-    phone = models.CharField(max_length=12),
+    dob = models.DateField(default =None)
+    phone_no = models.CharField(max_length=12,default =None)
     profile_image = models.ImageField(default='default.jpg',upload_to='aspirant_images')
     Jee_given = models.BooleanField(default=False)
 
@@ -41,7 +42,9 @@ class AspirantProfile(models.Model):
 
 
 class ExpertProfile(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE),
+    Name =models.CharField(max_length=50,default=None)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    
     educ_qual = models.TextField(max_length=250)
     presently_working= models.CharField(max_length=100)
     phone_no = models.CharField(max_length=12)
